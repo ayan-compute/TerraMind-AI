@@ -3,12 +3,14 @@ from climate import get_climate_data, process_climate_data
 CROP_REQUIREMENTS = {
     "wheat": {
         "rainfall_optimal": (750, 900),
-        "rainfall_absolute": (300, 1600)
+        "rainfall_absolute": (300, 1600),
+        "temperature_optimal": (15, 23) 
     },
 
     "maize": {
         "rainfall_optimal": (600, 1200),
-        "rainfall_absolute": (400, 1800)
+        "rainfall_absolute": (400, 1800),
+        "temperature_optimal": (18, 33)
     }
 }
 
@@ -73,6 +75,16 @@ def analyze_crop_season(df, crop):
     result = summarize_growing_season(df, start_date, end_date)
     return result
 
+def evaluate_temperature(crop, average_temp):
+    requirements = CROP_REQUIREMENTS[crop]
+
+    minimum, maximum = requirements["temperature_optimal"]
+
+    if minimum <= average_temp <= maximum:
+        return "Within optimal temperature reference"
+    else:
+        return "Outside optimal temperature reference"
+
 # Testing
 if __name__ == "__main__":
     data = get_climate_data(
@@ -124,7 +136,13 @@ if __name__ == "__main__":
                 if not wheat_df.empty:
                     wheat_info = analyze_crop_season(wheat_df, "wheat")
                     print("Wheat growing-season climate:", wheat_info)
+
                 else:
                     print("No valid wheat climate data.")
             else:
                 print("Failed to retrieve wheat climate data.")
+
+            print("Wheat temperature:",
+                   evaluate_temperature("wheat", wheat_info["average_temperature"]))
+            print("Maize temperature:",
+                  evaluate_temperature("maize", maize_analysis["average_temperature"]))

@@ -41,6 +41,9 @@ def process_climate_data(data):
 
     df = df.dropna()
     return df
+# Testing section
+
+# Testing section
 
 if __name__ == "__main__":
     data = get_climate_data(
@@ -49,5 +52,7 @@ if __name__ == "__main__":
     )
 
     if data is not None:
+        print(data["properties"]["parameter"].keys())
+
         df = process_climate_data(data)
         print(df)

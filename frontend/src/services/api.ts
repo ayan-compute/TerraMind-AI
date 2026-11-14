@@ -12,4 +12,16 @@ const respond = <T>(data: T): Promise<T> =>
 export const api = {
   listSites: () => respond(sites),
   listCrops: () => respond(crops),
+
+  getClimate: async () => {
+    const response = await fetch(
+      'http://127.0.0.1:8000/climate?latitude=33.7&longitude=73.1&start=20250101&end=20250107'
+    )
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch NASA climate data")
+    }
+
+    return response.json()
+  },
 }

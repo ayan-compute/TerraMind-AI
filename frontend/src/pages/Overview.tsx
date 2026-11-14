@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import { api } from '../services/api'
 import { CalendarDays, CloudRain, Thermometer } from 'lucide-react'
 import { Card, H2, Stat, VerdictBadge } from '../components/ui'
 import { ALL_MONTHS, MONTHS, climateStats, screenCrop } from '../lib/analysis'
@@ -9,6 +11,19 @@ interface Props { site: Site; sites: Site[]; crops: Crop[]; go: (p: Page) => voi
 
 export default function Overview({ site, sites, crops, go, pick }: Props) {
   const s = climateStats(site, ALL_MONTHS)
+  const [nasa, setNasa] = useState<{
+  average_temperature: number
+  total_rainfall: number
+  days_analyzed: number
+} | null>(null)
+
+const [nasaError, setNasaError] = useState(false)
+
+useEffect(() => {
+  api.getClimate()
+    .then(setNasa)
+    .catch(() => setNasaError(true))
+}, [])
   return (
     <div className="space-y-8">
       <div className="glass relative overflow-hidden rounded-3xl p-8 sm:p-12">
@@ -35,7 +50,35 @@ export default function Overview({ site, sites, crops, go, pick }: Props) {
           <Stat icon={CalendarDays} label="Days analyzed" value={String(s.days)} hint="One sample year" />
         </div>
       </section>
+<section className="glass rounded-2xl p-5">
+  <H2>NASA POWER Data — Islamabad, January 1–7, 2025</H2>
 
+  {nasa ? (
+    <div className="grid gap-4 sm:grid-cols-3">
+      <Stat
+        icon={Thermometer}
+        label="Average temperature"
+        value={`${nasa.average_temperature} °C`}
+      />
+
+      <Stat
+        icon={CloudRain}
+        label="Total rainfall"
+        value={`${nasa.total_rainfall} mm`}
+      />
+
+      <Stat
+        icon={CalendarDays}
+        label="Days analyzed"
+        value={String(nasa.days_analyzed)}
+      />
+    </div>
+  ) : (
+    <p className="text-slate-400">
+      {nasaError ? "Could not connect to FastAPI." : "Loading NASA data..."}
+    </p>
+  )}
+</section>
       <section>
         <H2>Crop analysis summary</H2>
         <div className="grid gap-4 md:grid-cols-2">

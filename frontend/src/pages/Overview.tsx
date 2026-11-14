@@ -11,6 +11,7 @@ interface Props { site: Site; sites: Site[]; crops: Crop[]; go: (p: Page) => voi
 
 export default function Overview({ site, sites, crops, go, pick }: Props) {
   const s = climateStats(site, ALL_MONTHS)
+  const isNASA = site.id === 'islamabad-nasa'
   const [nasa, setNasa] = useState<{
   average_temperature: number
   total_rainfall: number
@@ -45,9 +46,34 @@ useEffect(() => {
       <section>
         <H2>Climate overview for {site.name}</H2>
         <div className="grid gap-4 sm:grid-cols-3">
-          <Stat icon={Thermometer} label="Average temperature" value={`${s.meanTemp.toFixed(1)} °C`} hint="Mean of 12 sample months" />
-          <Stat icon={CloudRain} label="Total precipitation" value={`${Math.round(s.totalRain)} mm`} hint="Sum of 12 sample months" />
-          <Stat icon={CalendarDays} label="Days analyzed" value={String(s.days)} hint="One sample year" />
+          <Stat
+  icon={Thermometer}
+  label="Average temperature"
+  value={`${s.meanTemp.toFixed(1)} °C`}
+  hint={
+    isNASA
+      ? "Mean of 12 NASA POWER monthly averages"
+      : "Mean of 12 sample months"
+  }
+/>
+
+<Stat
+  icon={CloudRain}
+  label="Total precipitation"
+  value={`${Math.round(s.totalRain)} mm`}
+  hint={
+    isNASA
+      ? "Sum of NASA POWER monthly rainfall totals"
+      : "Sum of 12 sample months"
+  }
+/>
+
+<Stat
+  icon={CalendarDays}
+  label={isNASA ? "Months analyzed" : "Days analyzed"}
+  value={isNASA ? "12" : String(s.days)}
+  hint={isNASA ? "January–December 2025" : "One sample year"}
+/>
         </div>
       </section>
 <section className="glass rounded-2xl p-5">

@@ -1,8 +1,6 @@
 import { crops, sites } from '../data/mock'
 
-// API service layer. Today it returns local sample data; nothing here contacts NASA or any server.
-// To connect the Python backend, replace each body with a fetch() call and keep the return types.
-const SIMULATE_ERROR = false // set to true to preview the error state
+const SIMULATE_ERROR = false 
 
 const respond = <T>(data: T): Promise<T> =>
   new Promise((resolve, reject) =>
@@ -12,6 +10,19 @@ const respond = <T>(data: T): Promise<T> =>
 type MonthlyClimate = {
   monthly_temperature: Record<string, number>
   monthly_rainfall: Record<string, number>
+}
+
+export type CropSuitabilityResult = {
+  crop: string
+  season_start: string
+  season_end: string
+  seasonal_temperature: number
+  seasonal_rainfall: number
+  annual_rainfall_2025: number
+  temperature_result: string
+  rainfall_result: string
+  temperature_reference: [number, number]
+  annual_rainfall_reference: [number, number]
 }
 
 export const api = {
@@ -51,4 +62,26 @@ export const api = {
 
     return response.json()
   },
+
+  getCropSuitability: async (
+  latitude: number,
+  longitude: number,
+  crop: string
+): Promise<CropSuitabilityResult> => {
+  const params = new URLSearchParams({
+    latitude: String(latitude),
+    longitude: String(longitude),
+    crop: crop,
+  })
+
+  const response = await fetch(
+    `http://127.0.0.1:8000/crop-suitability?${params}`
+  )
+
+  if (!response.ok) {
+    throw new Error('Failed to analyze crop suitability')
+  }
+
+  return response.json()
+},
 }

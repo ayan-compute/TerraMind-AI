@@ -9,6 +9,8 @@ from crop_analysis import (
     evaluate_temperature,
     evaluate_rainfall
 )
+from datetime import date
+from crop_analysis import assess_rotation, CROP_FAMILIES
 
 app = FastAPI()
 
@@ -126,4 +128,51 @@ def crop_suitability(latitude: float, longitude: float, crop: str):
         "rainfall_result": rainfall_result,
         "temperature_reference": CROP_REQUIREMENTS[crop]["temperature_optimal"],
         "annual_rainfall_reference": CROP_REQUIREMENTS[crop]["rainfall_optimal"]
+    }
+
+@app.get("/crop-rotation")
+def crop_rotation(
+    first_crop: str,
+    next_crop: str,
+    harvest_date: str,
+    planting_date: str
+):
+    first_crop = first_crop.lower().strip()
+    next_crop = next_crop.lower().strip()
+
+    # Validate crop names
+    if first_crop not in CROP_FAMILIES or next_crop not in CROP_FAMILIES:
+        raise HTTPException(
+            status_code=400,
+            detail="Unsupported crop"
+        )
+
+    # Validate dates
+    try:
+        harvest = date.fromisoformat(harvest_date)
+        planting = date.fromisoformat(planting_date)
+    except ValueError:
+        raise HTTPException(
+            status_code=422,
+            detail="Dates must be valid YYYY-MM-DD dates"
+        )
+
+    if planting <= harvest:
+        raise HTTPException(
+            status_code=400,
+            detail="Planting date must be after harvest date"
+        )
+
+    result = assess_rotation(
+        first_crop,
+        next_crop,
+        harvest_date,
+        planting_date
+    )
+
+    return {
+        **result,
+        "first_family": CROP_FAMILIES[first_crop],
+        "next_family": CROP_FAMILIES[next_crop],
+        "note": "Preliminary rotation screening based on dates and crop families only."
     }

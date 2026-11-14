@@ -9,6 +9,11 @@ const respond = <T>(data: T): Promise<T> =>
     setTimeout(() => (SIMULATE_ERROR ? reject(new Error('The data service did not respond. Try again.')) : resolve(data)), 500),
   )
 
+type MonthlyClimate = {
+  monthly_temperature: Record<string, number>
+  monthly_rainfall: Record<string, number>
+}
+
 export const api = {
   listSites: () => respond(sites),
   listCrops: () => respond(crops),
@@ -24,4 +29,17 @@ export const api = {
 
     return response.json()
   },
+
+  getMonthlyClimate: async (): Promise<MonthlyClimate> => {
+  const response = await fetch(
+    'http://127.0.0.1:8000/climate-monthly?latitude=33.7&longitude=73.1&start=20250101&end=20251231'
+  )
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch monthly NASA data')
+  }
+
+  return response.json()
+},
+
 }

@@ -25,6 +25,13 @@ CROP_SEASONS = {
         "end": "2025-04-15"
     }
 }
+
+CROP_FAMILIES = {
+    "wheat": "cereal",
+    "maize": "cereal",
+    "chickpea": "legume"
+}
+
 def summarize_climate(df):
      avg_temp = df["Temperature"].mean()
      total_rainfall = df["Rainfall"].sum()
@@ -95,6 +102,15 @@ def check_crop_sequence(first_crop, second_crop,):
         return gap_days
     else:
         return "Dates overlap or are out of order."
+
+def check_crop_diversity(first_crop, second_crop):
+    first_family = CROP_FAMILIES[first_crop]
+    second_family = CROP_FAMILIES[second_crop]
+
+    if first_family == second_family:
+        return "Same crop family"
+    else:
+        return "Different crop families"
     
 # Testing
 if __name__ == "__main__":
@@ -160,3 +176,6 @@ if __name__ == "__main__":
 
             result = check_crop_sequence("wheat", "maize")
             print("Days between wheat and maize:", result)
+
+            print(check_crop_diversity("wheat", "maize"))
+            print(check_crop_diversity("wheat", "chickpea"))

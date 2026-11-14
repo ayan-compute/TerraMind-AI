@@ -43,8 +43,6 @@ def process_climate_data(data):
     return df
 # Testing section
 
-# Testing section
-
 if __name__ == "__main__":
     data = get_climate_data(
         33.7, 73.1,

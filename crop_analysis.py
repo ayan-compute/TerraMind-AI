@@ -124,6 +124,16 @@ def assess_rotation(first_crop, second_crop):
     }
     return rtdct
 
+def calculate_custom_gap(harvest_date, planting_date):
+    harvest = pd.to_datetime(harvest_date)
+    planting = pd.to_datetime(planting_date)
+    calculated_gap = (planting - harvest).days - 1
+
+    if harvest < planting:
+        return calculated_gap
+    else:
+        return "Invalid crop sequence"
+
 # Testing
 if __name__ == "__main__":
     data = get_climate_data(
@@ -193,4 +203,8 @@ if __name__ == "__main__":
             print(check_crop_diversity("wheat", "chickpea"))
 
             result = assess_rotation("wheat", "maize")
+            print(result)
+
+            result = calculate_custom_gap("2025-04-20", "2025-05-10")
+
             print(result)

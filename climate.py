@@ -40,6 +40,10 @@ def process_climate_data(data):
     ]
 
     df = df.dropna()
+    
+    df["Date"] = pd.to_datetime(df["Date"], format="%Y%m%d")
+    df["Month"] = df["Date"].dt.month
+    
     return df
 # Testing section
 

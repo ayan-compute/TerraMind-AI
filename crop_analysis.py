@@ -10,6 +10,15 @@ def summarize_climate(df):
     "days_analyzed": no_of_observations
     }
 
+def summarize_monthly_climate(df):
+    monthly_temp = df.groupby("Month")["Temperature"].mean()
+    monthly_rainfall = df.groupby("Month")["Rainfall"].sum()
+
+    return {
+        "monthly_temperature": monthly_temp,
+        "monthly_rainfall": monthly_rainfall
+    }
+
 # Testing
 if __name__ == "__main__":
     data = get_climate_data(
@@ -25,3 +34,10 @@ if __name__ == "__main__":
             print(summary)
         else:
             print("No valid climate data available.")
+    monthly_summary = summarize_monthly_climate(df)
+
+    print("Monthly Average Temperature:")
+    print(monthly_summary["monthly_temperature"])
+
+    print("Monthly Total Rainfall:")
+    print(monthly_summary["monthly_rainfall"])

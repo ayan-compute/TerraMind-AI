@@ -5,9 +5,9 @@ from crop_analysis import summarize_climate
 app = FastAPI()
 
 @app.get("/health")
-@app.get("/climate-test")
-def climate_test():
-    data = get_climate_data(33.7, 73.1, "20250101", "20250107")
+@app.get("/climate")
+def climate(latitude: float, longitude: float, start: str, end: str):
+    data = get_climate_data(latitude, longitude, start, end)
 
     if data is None:
         raise HTTPException(status_code=502, detail="NASA request failed")
@@ -20,5 +20,3 @@ def climate_test():
     summary = summarize_climate(df)
 
     return summary
-def health_check():
-    return {"status": "TerraMind backend is running"}

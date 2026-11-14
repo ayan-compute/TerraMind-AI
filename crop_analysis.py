@@ -1,4 +1,5 @@
 from climate import get_climate_data, process_climate_data
+import pandas as pd
 
 CROP_REQUIREMENTS = {
     "wheat": {
@@ -85,6 +86,16 @@ def evaluate_temperature(crop, average_temp):
     else:
         return "Outside optimal temperature reference"
 
+def check_crop_sequence(first_crop, second_crop,):
+    first_end = pd.to_datetime(CROP_SEASONS[first_crop]["end"])
+
+    second_start = pd.to_datetime(CROP_SEASONS[second_crop]["start"])
+    gap_days = (second_start - first_end).days - 1
+    if first_end < second_start:
+        return gap_days
+    else:
+        return "Dates overlap or are out of order."
+    
 # Testing
 if __name__ == "__main__":
     data = get_climate_data(
@@ -146,3 +157,6 @@ if __name__ == "__main__":
                    evaluate_temperature("wheat", wheat_info["average_temperature"]))
             print("Maize temperature:",
                   evaluate_temperature("maize", maize_analysis["average_temperature"]))
+
+            result = check_crop_sequence("wheat", "maize")
+            print("Days between wheat and maize:", result)

@@ -11,7 +11,7 @@ interface Props { site: Site; sites: Site[]; crops: Crop[]; go: (p: Page) => voi
 
 export default function Overview({ site, sites, crops, go, pick }: Props) {
   const s = climateStats(site, ALL_MONTHS)
-  const isNASA = site.id === 'islamabad-nasa'
+  const isNASA = site.id === 'islamabad-nasa' || site.id === 'custom-nasa'
   const [nasa, setNasa] = useState<{
   average_temperature: number
   total_rainfall: number

@@ -24,22 +24,31 @@ export const api = {
     )
 
     if (!response.ok) {
-      throw new Error("Failed to fetch NASA climate data")
+      throw new Error('Failed to fetch NASA climate data')
     }
 
     return response.json()
   },
 
-  getMonthlyClimate: async (): Promise<MonthlyClimate> => {
-  const response = await fetch(
-    'http://127.0.0.1:8000/climate-monthly?latitude=33.7&longitude=73.1&start=20250101&end=20251231'
-  )
+  getMonthlyClimate: async (
+    latitude: number = 33.7,
+    longitude: number = 73.1
+  ): Promise<MonthlyClimate> => {
+    const params = new URLSearchParams({
+      latitude: String(latitude),
+      longitude: String(longitude),
+      start: '20250101',
+      end: '20251231',
+    })
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch monthly NASA data')
-  }
+    const response = await fetch(
+      `http://127.0.0.1:8000/climate-monthly?${params}`
+    )
 
-  return response.json()
-},
+    if (!response.ok) {
+      throw new Error('Failed to fetch monthly NASA data')
+    }
 
+    return response.json()
+  },
 }

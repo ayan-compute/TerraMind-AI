@@ -1,5 +1,17 @@
 from climate import get_climate_data, process_climate_data
 
+CROP_REQUIREMENTS = {
+    "wheat": {
+        "rainfall_optimal": (750, 900),
+        "rainfall_absolute": (300, 1600)
+    },
+
+    "maize": {
+        "rainfall_optimal": (600, 1200),
+        "rainfall_absolute": (400, 1800)
+    }
+}
+
 def summarize_climate(df):
      avg_temp = df["Temperature"].mean()
      total_rainfall = df["Rainfall"].sum()
@@ -19,6 +31,16 @@ def summarize_monthly_climate(df):
         "monthly_rainfall": monthly_rainfall
     }
 
+def evaluate_rainfall(crop, annual_rainfall):
+    requirements = CROP_REQUIREMENTS[crop]
+
+    minimum, maximum = requirements["rainfall_optimal"]
+
+    if minimum <= annual_rainfall <= maximum:
+        return "Within optimal annual reference"
+    else:
+        return "Outside optimal annual reference"
+
 # Testing
 if __name__ == "__main__":
     data = get_climate_data(
@@ -32,12 +54,24 @@ if __name__ == "__main__":
         if not df.empty:
             summary = summarize_climate(df)
             print(summary)
+
+            monthly_summary = summarize_monthly_climate(df)
+
+            print("Monthly Average Temperature:")
+            print(monthly_summary["monthly_temperature"])
+
+            print("Monthly Total Rainfall:")
+            print(monthly_summary["monthly_rainfall"])
+
+            for crop in ["wheat", "maize"]:
+                result = evaluate_rainfall(
+                    crop,
+                    summary["total_rainfall"]
+                )
+                
+                print(f"{crop.capitalize()} rainfall assessment: {result}")
+
         else:
             print("No valid climate data available.")
-    monthly_summary = summarize_monthly_climate(df)
-
-    print("Monthly Average Temperature:")
-    print(monthly_summary["monthly_temperature"])
-
-    print("Monthly Total Rainfall:")
-    print(monthly_summary["monthly_rainfall"])
+    else:
+        print("Could not retrieve climate data.")

@@ -16,6 +16,10 @@ CROP_SEASONS = {
     "maize": {
         "start": "2025-05-01",
         "end": "2025-09-30"
+    },
+    "wheat": {
+        "start": "2024-11-15",
+        "end": "2025-04-15"
     }
 }
 def summarize_climate(df):
@@ -107,10 +111,20 @@ if __name__ == "__main__":
             print(season)
             
             maize_analysis = analyze_crop_season(df, "maize")
-            
             print(maize_analysis)
-        
-        else:
-            print("No valid climate data available.")
-    else:
-        print("Could not retrieve climate data.")
+
+            wheat_data = get_climate_data(
+                33.7, 73.1,
+                "20241115", "20250415"
+            )
+
+            if wheat_data is not None:
+                wheat_df = process_climate_data(wheat_data)
+
+                if not wheat_df.empty:
+                    wheat_info = analyze_crop_season(wheat_df, "wheat")
+                    print("Wheat growing-season climate:", wheat_info)
+                else:
+                    print("No valid wheat climate data.")
+            else:
+                print("Failed to retrieve wheat climate data.")

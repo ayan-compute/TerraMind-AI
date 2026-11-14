@@ -21,7 +21,7 @@ def get_climate_data(latitude, longitude, start, end):
         data = response.json()
         return data
     except requests.exceptions.RequestException:
-        print(f"API request failed.")
+        print("API request failed.")
         return None
     
 def process_climate_data(data):

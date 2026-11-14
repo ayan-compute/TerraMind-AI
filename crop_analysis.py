@@ -12,6 +12,12 @@ CROP_REQUIREMENTS = {
     }
 }
 
+CROP_SEASONS = {
+    "maize": {
+        "start": "2025-05-01",
+        "end": "2025-09-30"
+    }
+}
 def summarize_climate(df):
      avg_temp = df["Temperature"].mean()
      total_rainfall = df["Rainfall"].sum()
@@ -56,6 +62,13 @@ def summarize_growing_season(df, start_date, end_date):
     }
     return wd
 
+def analyze_crop_season(df, crop):
+    season = CROP_SEASONS[crop]
+    start_date = season["start"]
+    end_date = season["end"]
+    result = summarize_growing_season(df, start_date, end_date)
+    return result
+
 # Testing
 if __name__ == "__main__":
     data = get_climate_data(
@@ -92,6 +105,11 @@ if __name__ == "__main__":
                 "2025-09-30"
                 )
             print(season)
+            
+            maize_analysis = analyze_crop_season(df, "maize")
+            
+            print(maize_analysis)
+        
         else:
             print("No valid climate data available.")
     else:

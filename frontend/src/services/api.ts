@@ -25,6 +25,16 @@ export type CropSuitabilityResult = {
   annual_rainfall_reference: [number, number]
 }
 
+export type CropRotationResult = {
+  first_crop: string
+  second_crop: string
+  gap_days: number
+  family_diversity: string
+  first_family: string
+  next_family: string
+  note: string
+}
+
 export const api = {
   listSites: () => respond(sites),
   listCrops: () => respond(crops),
@@ -80,6 +90,30 @@ export const api = {
 
   if (!response.ok) {
     throw new Error('Failed to analyze crop suitability')
+  }
+
+  return response.json()
+},
+
+getCropRotation: async (
+  firstCrop: string,
+  nextCrop: string,
+  harvestDate: string,
+  plantingDate: string
+): Promise<CropRotationResult> => {
+  const params = new URLSearchParams({
+    first_crop: firstCrop,
+    next_crop: nextCrop,
+    harvest_date: harvestDate,
+    planting_date: plantingDate,
+  })
+
+  const response = await fetch(
+    `http://127.0.0.1:8000/crop-rotation?${params}`
+  )
+
+  if (!response.ok) {
+    throw new Error('Failed to analyze crop rotation')
   }
 
   return response.json()

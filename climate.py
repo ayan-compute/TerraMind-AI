@@ -24,12 +24,3 @@ def get_climate_data(latitude, longitude, start, end):
         print(f"API request failed.")
         return None
     
-data = get_climate_data(
-    33.7,
-    73.1,
-    "20250101",
-    "20250107"
-)
-
-if data is not None:
-    print(data["properties"]["parameter"].keys())

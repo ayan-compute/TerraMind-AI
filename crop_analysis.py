@@ -112,8 +112,8 @@ def check_crop_diversity(first_crop, second_crop):
     else:
         return "Different crop families"
 
-def assess_rotation(first_crop, second_crop):
-    gap = check_crop_sequence(first_crop, second_crop)
+def assess_rotation(first_crop, second_crop, harvest_date, planting_date):
+    gap = calculate_custom_gap(harvest_date, planting_date)
     diversity = check_crop_diversity(first_crop, second_crop)
 
     rtdct = {
@@ -202,9 +202,17 @@ if __name__ == "__main__":
             print(check_crop_diversity("wheat", "maize"))
             print(check_crop_diversity("wheat", "chickpea"))
 
-            result = assess_rotation("wheat", "maize")
-            print(result)
+
 
             result = calculate_custom_gap("2025-04-20", "2025-05-10")
+
+            print(result)
+
+            result = assess_rotation(
+                "wheat",
+                "maize",
+                "2025-04-20",
+                "2025-05-10"
+            )
 
             print(result)

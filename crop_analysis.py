@@ -41,6 +41,21 @@ def evaluate_rainfall(crop, annual_rainfall):
     else:
         return "Outside optimal annual reference"
 
+def summarize_growing_season(df, start_date, end_date):
+    seasonal_df = df[
+        (df["Date"] >= start_date) &
+        (df["Date"] <= end_date)
+    ]
+    if seasonal_df.empty:
+        return None
+    
+    wd = {
+        "average_temperature": round(float(seasonal_df["Temperature"].mean()), 2),
+        "total_rainfall": round(float(seasonal_df["Rainfall"].sum()), 2),
+        "days_analyzed": len(seasonal_df)
+    }
+    return wd
+
 # Testing
 if __name__ == "__main__":
     data = get_climate_data(
@@ -71,6 +86,12 @@ if __name__ == "__main__":
                 
                 print(f"{crop.capitalize()} rainfall assessment: {result}")
 
+            season = summarize_growing_season(
+                df,
+                "2025-06-01",
+                "2025-09-30"
+                )
+            print(season)
         else:
             print("No valid climate data available.")
     else:

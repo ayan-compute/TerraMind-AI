@@ -180,7 +180,28 @@ export default function App() {
                   : <Suitability site={site} crops={crops} cropId={cropId} setCropId={setCropId} />
               )}
               {page === 'rotation' && <RotationPlanner crops={crops} rot={rot} setRot={setRot} />}
-              {page === 'report' && <Report site={site} crops={crops} cropId={cropId} rot={rot} />}
+              {page === 'report' && (
+                <Report
+                  site={site}
+                  crops={crops}
+                  cropId={cropId}
+                  rot={rot}
+                  latitude={
+                    site.id === 'islamabad-nasa'
+                      ? 33.7
+                      : site.id === 'custom-nasa'
+                        ? analyzedCoords.latitude
+                        : undefined
+                  }
+                  longitude={
+                    site.id === 'islamabad-nasa'
+                      ? 73.1
+                      : site.id === 'custom-nasa'
+                        ? analyzedCoords.longitude
+                        : undefined
+                  }
+                />
+              )}
             </div>
           )}
         </main>

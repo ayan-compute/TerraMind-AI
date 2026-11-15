@@ -33,7 +33,11 @@ export function Sidebar({ page, go, open, close }: { page: Page; go: (p: Page) =
             </button>
           ))}
         </nav>
-        <p className="mt-auto px-2 text-xs leading-relaxed text-slate-500">Built for the NASA Space Apps Challenge. Frontend preview with sample data only.</p>
+        <p className="mt-auto px-2 text-xs leading-relaxed text-slate-500">
+          Built for the NASA Space Apps Challenge.
+          Powered by NASA POWER historical climate data.
+          Preliminary crop analysis and rotation planning.
+        </p>
       </aside>
     </>
   )
